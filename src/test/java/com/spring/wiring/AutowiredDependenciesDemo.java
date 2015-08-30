@@ -1,6 +1,7 @@
 package com.spring.wiring;
 
 import com.spring.lifecycle.HelloService;
+import com.spring.qualifiers.Dessert;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +16,9 @@ public class AutowiredDependenciesDemo {
     @Autowired private HelloService helloService;
     @Autowired private MediaPlayer mediaPlayer;
     @Autowired private CD romanticSongsCD;
+    @Autowired
+//    @Qualifier(value = "iceCream")
+    private Dessert dessert;
 
     @Test
     public void testSayHello() {
@@ -30,5 +34,12 @@ public class AutowiredDependenciesDemo {
     @Test
     public void cdShouldPrintAllSongs(){
         romanticSongsCD.printAllSongs();
+    }
+
+    @Test
+    public void dessertShouldBeInitialized(){
+        Assert.assertNotNull(dessert);
+        dessert.enjoyDessert();
+
     }
 }

@@ -13,6 +13,7 @@
     <context:annotation-config />
     <context:component-scan base-package="com.spring.lifecycle"/>
     <!--<context:component-scan base-package="com.spring.wiring"/>-->
+    <context:component-scan base-package="com.spring.qualifiers"/>
 
     <bean id="cdPlayer" class="com.spring.wiring.CDPlayer"/>
 
@@ -37,5 +38,9 @@
         <value>Song3</value>
         <value>Song1</value>
     </util:list>
+
+    <!--<bean name="iceCream" class="com.spring.qualifiers.IceCream" primary="true"/>-->
+
+    <!--<bean name="cake" class="com.spring.qualifiers.Cake"/>-->
 
 </beans>
