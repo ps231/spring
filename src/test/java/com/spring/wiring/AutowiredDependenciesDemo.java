@@ -14,6 +14,7 @@ public class AutowiredDependenciesDemo {
 
     @Autowired private HelloService helloService;
     @Autowired private MediaPlayer mediaPlayer;
+    @Autowired private CD romanticSongsCD;
 
     @Test
     public void testSayHello() {
@@ -24,5 +25,10 @@ public class AutowiredDependenciesDemo {
     public void mediaPlayerMustBeInitialized(){
         Assert.assertNotNull(mediaPlayer);
         mediaPlayer.play();
+    }
+
+    @Test
+    public void cdShouldPrintAllSongs(){
+        romanticSongsCD.printAllSongs();
     }
 }
