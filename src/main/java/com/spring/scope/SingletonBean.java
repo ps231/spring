@@ -19,10 +19,12 @@ public class SingletonBean implements Singleton{
     @Autowired private Prototype prototype;
 
     public Prototype getPrototype() {
+
         return prototype;
     }
 
     public void greet() {
-        System.out.println(prototype.getWelcomeMessage());
+
+        System.out.println(getPrototype().getWelcomeMessage());
     }
 }

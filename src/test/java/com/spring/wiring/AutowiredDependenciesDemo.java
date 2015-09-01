@@ -6,8 +6,11 @@ import com.spring.scope.PrototypeBean;
 import com.spring.scope.Singleton;
 import com.spring.scope.SingletonBean;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.aop.framework.Advised;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -51,6 +54,7 @@ public class AutowiredDependenciesDemo {
     }
 
     @Test
+    @Ignore
     public void testPrototypeBeanInitialization(){
         Assert.assertNotNull(autowiredSingleton);
 
@@ -72,7 +76,43 @@ public class AutowiredDependenciesDemo {
 
         PrototypeBean contextPrototypeBean = (PrototypeBean) context.getBean("prototypeBean");
         Assert.assertNotSame(prototypeBean, contextPrototypeBean);
+    }
 
+    /*
+     * Since we have defined the PrototypeBean to be a AOP proxy, we get back the same proxy, but with separate bean implementations.
+     * If we try to assertNotSame based on the proxy reference, it fails, since any getX call is going to give back the same proxy.
+     * To be able to successfully see that separate instances are indeed created, we need to unwrap the proxy object.
+     */
+    @Test
+    public void testPrototypeBeanWithAopScopedProxy() throws Exception {
+        Assert.assertNotNull(autowiredSingleton);
 
+        PrototypeBean prototypeBean = unWrapProxyObject(((SingletonBean) autowiredSingleton).getPrototype(), PrototypeBean.class);
+        prototypeBean.setWelcomeMessage("hello world");
+
+        autowiredSingleton.greet();
+
+        Singleton contextSingleton = (Singleton) context.getBean("singletonBean");
+        Assert.assertSame(autowiredSingleton, contextSingleton);
+
+        PrototypeBean anotherPrototypeBean = unWrapProxyObject(((SingletonBean) contextSingleton).getPrototype(), PrototypeBean.class);
+        anotherPrototypeBean.setWelcomeMessage("hello india");
+
+        contextSingleton.greet();
+        autowiredSingleton.greet();
+
+        Assert.assertNotSame(prototypeBean, anotherPrototypeBean);
+
+        PrototypeBean contextPrototypeBean = unWrapProxyObject(context.getBean("prototypeBean"), PrototypeBean.class);
+        Assert.assertNotSame(prototypeBean, contextPrototypeBean);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    protected <T> T unWrapProxyObject(Object proxy, Class<T> targetClass) throws Exception {
+        if (AopUtils.isJdkDynamicProxy(proxy)) {
+            return (T) ((Advised)proxy).getTargetSource().getTarget();
+        } else {
+            return (T) proxy; // expected to be cglib proxy then, which is simply a specialized class
+        }
     }
 }
