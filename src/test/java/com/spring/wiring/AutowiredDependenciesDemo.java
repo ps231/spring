@@ -1,5 +1,8 @@
 package com.spring.wiring;
 
+import com.spring.autowiring.modes.Company;
+import com.spring.autowiring.modes.Party;
+import com.spring.autowiring.modes.Person;
 import com.spring.lifecycle.HelloService;
 import com.spring.qualifiers.Dessert;
 import com.spring.scope.PrototypeBean;
@@ -12,6 +15,7 @@ import org.junit.runner.RunWith;
 import org.springframework.aop.framework.Advised;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -29,6 +33,14 @@ public class AutowiredDependenciesDemo {
 
     @Autowired private Singleton autowiredSingleton;
     @Autowired ConfigurableApplicationContext context;
+
+    @Autowired private Person personAutowiredByType;
+    @Autowired private Company companyAutowiredByType;
+
+    @Autowired
+    @Qualifier(value = "organization")
+    private Party companyAutowiredByName;
+
 
     @Test
     public void testSayHello() {
@@ -105,6 +117,19 @@ public class AutowiredDependenciesDemo {
 
         PrototypeBean contextPrototypeBean = unWrapProxyObject(context.getBean("prototypeBean"), PrototypeBean.class);
         Assert.assertNotSame(prototypeBean, contextPrototypeBean);
+    }
+
+    @Test
+    public void understandAutowiringBasics(){
+
+        Assert.assertNotNull(personAutowiredByType);
+        Assert.assertNotNull(companyAutowiredByType);
+
+        personAutowiredByType.organizeParty();
+        companyAutowiredByType.organizeParty();
+
+        companyAutowiredByName.organizeParty();
+
     }
 
     @SuppressWarnings({"unchecked"})
