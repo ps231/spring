@@ -2,13 +2,15 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context
        http://www.springframework.org/schema/context/spring-context.xsd
        http://www.springframework.org/schema/util
-       http://www.springframework.org/schema/util/spring-util.xsd">
+       http://www.springframework.org/schema/util/spring-util.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <context:annotation-config />
     <context:component-scan base-package="com.spring.lifecycle"/>
@@ -44,5 +46,10 @@
     <!--<bean name="iceCream" class="com.spring.qualifiers.IceCream" primary="true"/>-->
 
     <!--<bean name="cake" class="com.spring.qualifiers.Cake"/>-->
+
+    <!-- It is necessary to define aspectj-autoproxy so that spring understands the aop proxies-->
+    <aop:aspectj-autoproxy/>
+    <context:component-scan base-package="com.spring.aspects"/>
+    <context:component-scan base-package="com.spring.aop"/>
 
 </beans>
